@@ -122,14 +122,15 @@ Sidebar.Scene = function ( editor ) {
 
 	var refreshUI = function () {
 
-		var camera = editor.camera;
+		//var camera = editor.camera;
 		var scene = editor.scene;
 
 		var options = [];
 
-		options.push( { static: true, value: camera.id, html: '<span class="type ' + camera.type + '"></span> ' + camera.name } );
-		options.push( { static: true, value: scene.id, html: '<span class="type ' + scene.type + '"></span> ' + scene.name + getScript( scene.uuid ) } );
+		//options.push( { static: true, value: camera.id, html: '<span class="type ' + camera.type + '"></span> ' + camera.name } );
+		//options.push( { static: true, value: scene.id, html: '<span class="type ' + scene.type + '"></span> ' + scene.name + getScript( scene.uuid ) } );
 
+		/*
 		function getScript( uuid ) {
 
 			if ( editor.scripts[ uuid ] !== undefined ) {
@@ -141,7 +142,7 @@ Sidebar.Scene = function ( editor ) {
 			return '';
 
 		}
-
+		*/
 		( function addObjects( objects, pad ) {
 
 			for ( var i = 0, l = objects.length; i < l; i ++ ) {
@@ -160,7 +161,7 @@ Sidebar.Scene = function ( editor ) {
 
 				}
 
-				html += getScript( object.uuid );
+				//html += getScript( object.uuid );
 
 				options.push( { value: object.id, html: html } );
 

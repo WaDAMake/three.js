@@ -82,7 +82,7 @@ Sidebar.Geometry = function ( editor ) {
 	// container.addStatic( objectActions );
 
 	// type
-
+	/*
 	var geometryTypeRow = new UI.Row();
 	var geometryType = new UI.Text();
 
@@ -90,9 +90,10 @@ Sidebar.Geometry = function ( editor ) {
 	geometryTypeRow.add( geometryType );
 
 	container.add( geometryTypeRow );
-
+	*/
+	
 	// uuid
-
+	/*
 	var geometryUUIDRow = new UI.Row();
 	var geometryUUID = new UI.Input().setWidth( '115px' ).setFontSize( '12px' ).setDisabled( true );
 	var geometryUUIDRenew = new UI.Button( '⟳' ).setMarginLeft( '7px' ).onClick( function () {
@@ -108,9 +109,10 @@ Sidebar.Geometry = function ( editor ) {
 	geometryUUIDRow.add( geometryUUIDRenew );
 
 	container.add( geometryUUIDRow );
-
+	*/
+	
 	// name
-
+	/*
 	var geometryNameRow = new UI.Row();
 	var geometryName = new UI.Input().setWidth( '150px' ).setFontSize( '12px' ).onChange( function () {
 
@@ -122,7 +124,8 @@ Sidebar.Geometry = function ( editor ) {
 	geometryNameRow.add( geometryName );
 
 	container.add( geometryNameRow );
-
+	*/
+	
 	// geometry
 
 	container.add( new Sidebar.Geometry.Geometry( editor ) );
@@ -149,10 +152,10 @@ Sidebar.Geometry = function ( editor ) {
 
 			container.setDisplay( 'block' );
 
-			geometryType.setValue( geometry.type );
+			//geometryType.setValue( geometry.type );
 
-			geometryUUID.setValue( geometry.uuid );
-			geometryName.setValue( geometry.name );
+			//geometryUUID.setValue( geometry.uuid );
+			//geometryName.setValue( geometry.name );
 
 			//
 

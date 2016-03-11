@@ -23,6 +23,8 @@ THREE.BufferGeometry = function () {
 	this.boundingSphere = null;
 
 	this.drawRange = { start: 0, count: Infinity };
+	
+	this.supportedArea = null;
 
 };
 
@@ -765,6 +767,249 @@ THREE.BufferGeometry.prototype = {
 
 	},
 
+	computeSurfaceArea: function (rotation, angleThresh) {
+
+		if (rotation == undefined) return null;
+		
+		angleThresh = angleThresh || 45;
+		
+		var index = this.index;
+		var attributes = this.attributes;
+		var groups = this.groups;
+		var area = 0;
+
+		var N = new THREE.Vector3(0, 0, 1);
+		var angle = 0;
+
+		if ( attributes.position ) {
+
+			var positions = attributes.position.array;
+			this.supportedArea = 0;
+			
+			if ( attributes.normal === undefined ) {
+
+				this.addAttribute( 'normal', new THREE.BufferAttribute( new Float32Array( positions.length ), 3 ) );
+
+			} else {
+
+				// reset existing normals to zero
+
+				var array = attributes.normal.array;
+
+				for ( var i = 0, il = array.length; i < il; i ++ ) {
+
+					array[ i ] = 0;
+
+				}
+
+			}
+
+			var normals = attributes.normal.array;
+
+			var faceDown = false;
+			var l, vA, vB, vC,
+			
+			vN = new THREE.Vector3(),
+
+			pA = new THREE.Vector3(),
+			pB = new THREE.Vector3(),
+			pC = new THREE.Vector3(),
+
+			cb = new THREE.Vector3(),
+			ab = new THREE.Vector3();
+
+			// indexed elements
+
+			if ( index ) {
+
+				var indices = index.array;
+
+				if ( groups.length === 0 ) {
+
+					this.addGroup( 0, indices.length );
+
+				}
+
+				for ( var j = 0, jl = groups.length; j < jl; ++ j ) {
+
+					var group = groups[ j ];
+
+					var start = group.start;
+					var count = group.count;
+
+					for ( var i = start, il = start + count; i < il; i += 3 ) {
+
+						vA = indices[ i + 0 ] * 3;
+						vB = indices[ i + 1 ] * 3;
+						vC = indices[ i + 2 ] * 3;
+
+						pA.fromArray( positions, vA );
+						pB.fromArray( positions, vB );
+						pC.fromArray( positions, vC );
+
+						cb.subVectors( pC, pB );
+						ab.subVectors( pA, pB );
+						vN.crossVectors(cb, ab);
+
+						l = vN.length();
+						faceDown = vN.z < 0;
+						
+						area += l / 2;
+
+						// compute supported area.
+						vN.applyEuler(rotation);
+						vN.cross(N);
+						
+						angle = 180 * Math.asin(vN.length() / l) / Math.PI;
+						
+						if (faceDown) {
+							if (angle >= angleThresh)
+	    	                	this.supportedArea += (l / 2);
+						}
+					}
+
+				}
+
+			} else {
+
+				// non-indexed elements (unconnected triangle soup)
+
+				for ( var i = 0, il = positions.length; i < il; i += 9 ) {
+
+					pA.fromArray( positions, i );
+					pB.fromArray( positions, i + 3 );
+					pC.fromArray( positions, i + 6 );
+
+					cb.subVectors( pC, pB );
+					ab.subVectors( pA, pB );
+					vN.crossVectors(cb, ab);
+					
+					l = vN.length();
+					faceDown = vN.z < 0;
+					
+					area += l / 2;
+
+					// compute supported area.
+					vN.applyEuler(rotation);
+					vN.cross(N);
+					
+					angle = 180 * Math.asin(vN.length() / l) / Math.PI;
+					
+					if (faceDown) {
+						if (angle >= angleThresh)
+    	                	this.supportedArea += (l / 2);
+					}
+				}
+
+			}
+
+		}
+		
+		return area;
+	},
+	
+	computeVolume: function() {
+
+		var index = this.index;
+		var attributes = this.attributes;
+		var groups = this.groups;
+		var volume = 0;
+		
+		var v321, v231, v312, v132, v213, v123;
+		
+		if ( attributes.position ) {
+
+			var positions = attributes.position.array;
+
+			var vA, vB, vC,
+
+			pA = new THREE.Vector3(),
+			pB = new THREE.Vector3(),
+			pC = new THREE.Vector3(),
+
+			cb = new THREE.Vector3(),
+			ab = new THREE.Vector3();
+
+			// indexed elements
+
+			if ( index ) {
+
+				var indices = index.array;
+
+				if ( groups.length === 0 ) {
+
+					this.addGroup( 0, indices.length );
+
+				}
+
+				for ( var j = 0, jl = groups.length; j < jl; ++ j ) {
+
+					var group = groups[ j ];
+
+					var start = group.start;
+					var count = group.count;
+
+					for ( var i = start, il = start + count; i < il; i += 3 ) {
+
+						vA = indices[ i + 0 ] * 3;
+						vB = indices[ i + 1 ] * 3;
+						vC = indices[ i + 2 ] * 3;
+
+						pA.fromArray( positions, vA );
+						pB.fromArray( positions, vB );
+						pC.fromArray( positions, vC );
+
+						// v321 = p3[0]*p2[1]*p1[2]
+						v321 = pC.x * pB.y * pA.z;
+						// v231 = p2[0]*p3[1]*p1[2]
+						v231 = pB.x * pC.y * pA.z;
+						// v312 = p3[0]*p1[1]*p2[2]
+						v312 = pC.x * pA.y * pB.z
+						// v132 = p1[0]*p3[1]*p2[2]
+						v132 = pA.x * pC.y * pB.z
+						// v213 = p2[0]*p1[1]*p3[2]
+						v213 = pB.x * pA.y * pC.z
+						// v123 = p1[0]*p2[1]*p3[2]
+						v123 = pA.x * pB.y * pC.z
+						
+						volume += ((1.0/6.0)*(-v321 + v231 + v312 - v132 - v213 + v123));
+					}
+
+				}
+
+			} else {
+
+				// non-indexed elements (unconnected triangle soup)
+
+				for ( var i = 0, il = positions.length; i < il; i += 9 ) {
+
+					pA.fromArray( positions, i );
+					pB.fromArray( positions, i + 3 );
+					pC.fromArray( positions, i + 6 );
+
+					// v321 = p3[0]*p2[1]*p1[2]
+					v321 = pC.x * pB.y * pA.z;
+					// v231 = p2[0]*p3[1]*p1[2]
+					v231 = pB.x * pC.y * pA.z;
+					// v312 = p3[0]*p1[1]*p2[2]
+					v312 = pC.x * pA.y * pB.z
+					// v132 = p1[0]*p3[1]*p2[2]
+					v132 = pA.x * pC.y * pB.z
+					// v213 = p2[0]*p1[1]*p3[2]
+					v213 = pB.x * pA.y * pC.z
+					// v123 = p1[0]*p2[1]*p3[2]
+					v123 = pA.x * pB.y * pC.z
+					
+					volume += ((1.0/6.0)*(-v321 + v231 + v312 - v132 - v213 + v123));
+				}
+
+			}
+
+		}
+		
+		return volume;
+	},
+	
 	merge: function ( geometry, offset ) {
 
 		if ( geometry instanceof THREE.BufferGeometry === false ) {

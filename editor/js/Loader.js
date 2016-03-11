@@ -316,8 +316,8 @@ var Loader = function ( editor ) {
 					geometry.sourceType = "stl";
 					geometry.sourceFile = file.name;
 
-					var material = new THREE.MeshStandardMaterial();
-
+					var material = new THREE.MeshNormalMaterial();
+					
 					var mesh = new THREE.Mesh( geometry, material );
 					mesh.name = filename;
 

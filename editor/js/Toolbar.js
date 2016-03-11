@@ -14,8 +14,13 @@ var Toolbar = function ( editor ) {
 
 	// translate / rotate / scale
 
+	var modeText = 'Mode: ';
+	var mode = new UI.Text( modeText + 'translate' );
+	buttons.add(mode);
+
 	var translate = new UI.Button( 'translate' ).onClick( function () {
 
+		mode.setValue( modeText + 'translate' );
 		signals.transformModeChanged.dispatch( 'translate' );
 
 	} );
@@ -23,6 +28,7 @@ var Toolbar = function ( editor ) {
 
 	var rotate = new UI.Button( 'rotate' ).onClick( function () {
 
+		mode.setValue( modeText + 'rotate' );
 		signals.transformModeChanged.dispatch( 'rotate' );
 
 	} );
@@ -30,18 +36,19 @@ var Toolbar = function ( editor ) {
 
 	var scale = new UI.Button( 'scale' ).onClick( function () {
 
+		mode.setValue( modeText + 'scale' );
 		signals.transformModeChanged.dispatch( 'scale' );
 
 	} );
 	buttons.add( scale );
-
+	
 	// grid
 
-	var grid = new UI.Number( 25 ).setWidth( '40px' ).onChange( update );
+	var grid = new UI.Number( 10 ).setWidth( '40px' ).onChange( update );
 	buttons.add( new UI.Text( 'grid: ' ) );
 	buttons.add( grid );
 
-	var snap = new UI.THREE.Boolean( false, 'snap' ).onChange( update );
+	var snap = new UI.THREE.Boolean( true, 'snap' ).onChange( update );
 	buttons.add( snap );
 
 	var local = new UI.THREE.Boolean( false, 'local' ).onChange( update );

@@ -9,7 +9,7 @@ var Sidebar = function ( editor ) {
 
 	//
 
-	var sceneTab = new UI.Text( 'SCENE' ).onClick( onClick );
+	var sceneTab = new UI.Text( 'Placement' ).onClick( onClick );
 	var projectTab = new UI.Text( 'PROJECT' ).onClick( onClick );
 	var settingsTab = new UI.Text( 'SETTINGS' ).onClick( onClick );
 
@@ -29,8 +29,8 @@ var Sidebar = function ( editor ) {
 	var scene = new UI.Span().add(
 		new Sidebar.Scene( editor ),
 		new Sidebar.Properties( editor ),
-		new Sidebar.Animation( editor ),
-		new Sidebar.Script( editor )
+		new Sidebar.Animation( editor )
+		//new Sidebar.Script( editor )
 	);
 	container.add( scene );
 
@@ -58,7 +58,7 @@ var Sidebar = function ( editor ) {
 		settings.setDisplay( 'none' );
 
 		switch ( section ) {
-			case 'SCENE':
+			case 'Placement':
 				sceneTab.setClass( 'selected' );
 				scene.setDisplay( '' );
 				break;
@@ -74,7 +74,7 @@ var Sidebar = function ( editor ) {
 
 	}
 
-	select( 'SCENE' );
+	select( 'Placement' );
 
 	return container;
 

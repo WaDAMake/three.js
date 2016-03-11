@@ -12,8 +12,8 @@ Sidebar.Object = function ( editor ) {
 	container.setDisplay( 'none' );
 
 	// Actions
-
-	var objectActions = new UI.Select().setPosition( 'absolute' ).setRight( '8px' ).setFontSize( '11px' );
+	/*
+	var objectActions = new UI.Select().setRight( '8px' ).setFontSize( '11px' );
 	objectActions.setOptions( {
 
 		'Actions': 'Actions',
@@ -50,8 +50,73 @@ Sidebar.Object = function ( editor ) {
 		this.setValue( 'Actions' );
 
 	} );
-	// container.addStatic( objectActions );
+	container.add( objectActions );
+	*/
+	
+	// migrated from Toolbar.js
+	var signals = editor.signals;
 
+	var buttons = new UI.Row();
+
+	// translate / rotate / scale
+
+	var modeText = 'Mode: ';
+	var mode = new UI.Text( modeText + 'translate' );
+	buttons.add(mode);
+	container.add(buttons);
+	
+	var translate = new UI.Button( 'translate' ).onClick( function () {
+
+		mode.setValue( modeText + 'translate' );
+		signals.transformModeChanged.dispatch( 'translate' );
+
+	} );
+	buttons.add( translate );
+
+	var rotate = new UI.Button( 'rotate' ).onClick( function () {
+
+		mode.setValue( modeText + 'rotate' );
+		signals.transformModeChanged.dispatch( 'rotate' );
+
+	} );
+	buttons.add( rotate );
+
+	var scale = new UI.Button( 'scale' ).onClick( function () {
+
+		mode.setValue( modeText + 'scale' );
+		signals.transformModeChanged.dispatch( 'scale' );
+
+	} );
+	buttons.add( scale );
+	
+	// grid
+
+	var grid = new UI.Integer( 10 ).setWidth( '40px' ).onChange( updateGrid );
+	var gridRow = new UI.Row();
+	
+	gridRow.add( new UI.Text( 'grid: ' ) );
+	gridRow.add( grid );
+
+	var snap = new UI.THREE.Boolean( false, 'snap' ).onChange( updateGrid );
+	gridRow.add( snap );
+
+	var local = new UI.THREE.Boolean( false, 'local' ).onChange( updateGrid );
+	gridRow.add( local );
+
+	var showGrid = new UI.THREE.Boolean( true, 'show' ).onChange( updateGrid );
+	gridRow.add( showGrid );
+
+	function updateGrid() {
+
+		signals.snapChanged.dispatch( snap.getValue() === true ? grid.getValue() : null );
+		signals.spaceChanged.dispatch( local.getValue() === true ? "local" : "world" );
+		signals.showGridChanged.dispatch( showGrid.getValue() );
+
+	}
+	
+	container.add(gridRow);
+	
+	/*
 	// type
 
 	var objectTypeRow = new UI.Row();
@@ -79,7 +144,7 @@ Sidebar.Object = function ( editor ) {
 	objectUUIDRow.add( objectUUIDRenew );
 
 	container.add( objectUUIDRow );
-
+	*/
 	// name
 
 	var objectNameRow = new UI.Row();
@@ -381,7 +446,9 @@ Sidebar.Object = function ( editor ) {
 
 			}
 
-			var newRotation = new THREE.Euler( objectRotationX.getValue(), objectRotationY.getValue(), objectRotationZ.getValue() );
+			var newRotation = new THREE.Euler( THREE.Math.degToRad(objectRotationX.getValue())
+											, THREE.Math.degToRad(objectRotationY.getValue())
+											, THREE.Math.degToRad(objectRotationZ.getValue()) );
 			if ( object.rotation.toVector3().distanceTo( newRotation.toVector3() ) >= 0.01 ) {
 
 				editor.execute( new SetRotationCommand( object, newRotation ) );
@@ -606,9 +673,9 @@ Sidebar.Object = function ( editor ) {
 
 	function updateUI( object ) {
 
-		objectType.setValue( object.type );
+		//objectType.setValue( object.type );
 
-		objectUUID.setValue( object.uuid );
+		//objectUUID.setValue( object.uuid );
 		objectName.setValue( object.name );
 
 		/*
@@ -623,9 +690,9 @@ Sidebar.Object = function ( editor ) {
 		objectPositionY.setValue( object.position.y );
 		objectPositionZ.setValue( object.position.z );
 
-		objectRotationX.setValue( object.rotation.x );
-		objectRotationY.setValue( object.rotation.y );
-		objectRotationZ.setValue( object.rotation.z );
+		objectRotationX.setValue( THREE.Math.radToDeg(object.rotation.x) );
+		objectRotationY.setValue( THREE.Math.radToDeg(object.rotation.y) );
+		objectRotationZ.setValue( THREE.Math.radToDeg(object.rotation.z) );
 
 		objectScaleX.setValue( object.scale.x );
 		objectScaleY.setValue( object.scale.y );
