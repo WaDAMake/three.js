@@ -43,6 +43,7 @@ Sidebar.Scene = function ( editor ) {
 
 	};
 
+	/*
 	var fogTypeRow = new UI.Row();
 	var fogType = new UI.Select().setOptions( {
 
@@ -117,7 +118,7 @@ Sidebar.Scene = function ( editor ) {
 	fogDensityRow.add( fogDensity );
 
 	container.add( fogDensityRow );
-
+	*/
 	//
 
 	var refreshUI = function () {
@@ -179,6 +180,7 @@ Sidebar.Scene = function ( editor ) {
 
 		}
 
+		/*
 		if ( scene.fog ) {
 
 			fogColor.setHexValue( scene.fog.color.getHex() );
@@ -201,11 +203,12 @@ Sidebar.Scene = function ( editor ) {
 			fogType.setValue( "None" );
 
 		}
-
+	
 		refreshFogUI();
-
+		*/
 	};
 
+	/*
 	var refreshFogUI = function () {
 
 		var type = fogType.getValue();
@@ -216,7 +219,8 @@ Sidebar.Scene = function ( editor ) {
 		fogDensityRow.setDisplay( type === 'FogExp2' ? '' : 'none' );
 
 	};
-
+	*/
+	
 	refreshUI();
 
 	// events

@@ -9,13 +9,13 @@ var Sidebar = function ( editor ) {
 
 	//
 
-	var sceneTab = new UI.Text( 'Placement' ).onClick( onClick );
-	var projectTab = new UI.Text( 'PROJECT' ).onClick( onClick );
-	var settingsTab = new UI.Text( 'SETTINGS' ).onClick( onClick );
+	var sceneTab = new UI.Text( '模型' ).onClick( onClick );
+	var projectTab = new UI.Text( '投影' ).onClick( onClick );
+	var settingsTab = new UI.Text( '設定' ).onClick( onClick );
 
 	var tabs = new UI.Div();
 	tabs.setId( 'tabs' );
-	tabs.add( sceneTab, projectTab, settingsTab );
+	tabs.add( sceneTab, settingsTab, projectTab );
 	container.add( tabs );
 
 	function onClick( event ) {
@@ -28,8 +28,8 @@ var Sidebar = function ( editor ) {
 
 	var scene = new UI.Span().add(
 		new Sidebar.Scene( editor ),
-		new Sidebar.Properties( editor ),
-		new Sidebar.Animation( editor )
+		new Sidebar.Properties( editor )
+		//new Sidebar.Animation( editor )
 		//new Sidebar.Script( editor )
 	);
 	container.add( scene );
@@ -44,7 +44,6 @@ var Sidebar = function ( editor ) {
 		new Sidebar.History( editor )
 	);
 	container.add( settings );
-
 	//
 
 	function select( section ) {
@@ -58,15 +57,15 @@ var Sidebar = function ( editor ) {
 		settings.setDisplay( 'none' );
 
 		switch ( section ) {
-			case 'Placement':
+			case '模型':
 				sceneTab.setClass( 'selected' );
 				scene.setDisplay( '' );
 				break;
-			case 'PROJECT':
+			case '投影':
 				projectTab.setClass( 'selected' );
 				project.setDisplay( '' );
 				break;
-			case 'SETTINGS':
+			case '設定':
 				settingsTab.setClass( 'selected' );
 				settings.setDisplay( '' );
 				break;
@@ -74,7 +73,7 @@ var Sidebar = function ( editor ) {
 
 	}
 
-	select( 'Placement' );
+	select( '模型' );
 
 	return container;
 

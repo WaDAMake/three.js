@@ -9,7 +9,7 @@ Menubar.File = function ( editor ) {
 
 	var title = new UI.Panel();
 	title.setClass( 'title' );
-	title.setTextContent( 'File' );
+	title.setTextContent( '專案' );
 	container.add( title );
 
 	var options = new UI.Panel();
@@ -20,7 +20,7 @@ Menubar.File = function ( editor ) {
 
 	var option = new UI.Row();
 	option.setClass( 'option' );
-	option.setTextContent( 'New' );
+	option.setTextContent( '新專案' );
 	option.onClick( function () {
 
 		if ( confirm( 'Any unsaved data will be lost. Are you sure?' ) ) {
@@ -48,7 +48,7 @@ Menubar.File = function ( editor ) {
 
 	var option = new UI.Row();
 	option.setClass( 'option' );
-	option.setTextContent( 'Import' );
+	option.setTextContent( '載入模型' );
 	option.onClick( function () {
 
 		fileInput.click();
@@ -57,7 +57,7 @@ Menubar.File = function ( editor ) {
 	options.add( option );
 
 	//
-
+/*
 	options.add( new UI.HorizontalRule() );
 
 	// Export Geometry
@@ -184,9 +184,10 @@ Menubar.File = function ( editor ) {
 
 	} );
 	options.add( option );
-
+	*/
 	// Export STL
-
+	options.add( new UI.HorizontalRule() );
+	
 	var option = new UI.Row();
 	option.setClass( 'option' );
 	option.setTextContent( 'Export STL' );
@@ -200,7 +201,7 @@ Menubar.File = function ( editor ) {
 	options.add( option );
 
 	//
-
+	/*
 	options.add( new UI.HorizontalRule() );
 
 	// Publish
@@ -250,7 +251,7 @@ Menubar.File = function ( editor ) {
 
 	} );
 	options.add( option );
-
+	*/
 	/*
 	// Publish (Dropbox)
 

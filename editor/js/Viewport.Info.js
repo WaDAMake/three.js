@@ -18,9 +18,9 @@ Viewport.Info = function ( editor ) {
 	var verticesText = new UI.Text( '0' ).setMarginLeft( '6px' );
 	var trianglesText = new UI.Text( '0' ).setMarginLeft( '6px' );
 
-	container.add( new UI.Text( 'objects' ), objectsText, new UI.Break() );
-	container.add( new UI.Text( 'vertices' ), verticesText, new UI.Break() );
-	container.add( new UI.Text( 'triangles' ), trianglesText, new UI.Break() );
+	container.add( new UI.Text( '模型數' ), objectsText, new UI.Break() );
+	container.add( new UI.Text( '頂點數' ), verticesText, new UI.Break() );
+	container.add( new UI.Text( '三角面數' ), trianglesText, new UI.Break() );
 
 	signals.objectAdded.add( update );
 	signals.objectRemoved.add( update );

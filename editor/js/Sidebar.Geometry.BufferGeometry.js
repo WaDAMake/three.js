@@ -42,35 +42,6 @@ Sidebar.Geometry.BufferGeometry = function ( editor ) {
 				container.add( panel );
 
 			}
-
-			var priceRow = new UI.Row();
-			var price = new UI.Text('n/a');
-			
-			priceRow.add(new UI.Text('Price:').setWidth( '90px'));
-			priceRow.add(price);
-			container.add(priceRow);
-			
-			var areaValue = geometry.computeSurfaceArea(object.rotation);
-			var volumeValue = geometry.computeVolume();
-			
-			var loops = 3;
-			var layerHeight = 0.25;
-			var nozzle = 0.4
-			var perimeterSpeed = 30;
-			var infilledSpeed = 55;
-			var infilledPercent = 0.15;
-			var unitPrice = 200;
-			
-			volumeValue -= layerHeight * loops * nozzle;
-			var priceValue = (areaValue / (layerHeight * perimeterSpeed)) * loops + (volumeValue * infilledPercent) / (layerHeight * nozzle * infilledSpeed);
-
-			price.setValue(parseInt(priceValue / 3600 * unitPrice));
-			
-			container.add(new UI.Text('Supported Area: ' + parseInt(geometry.supportedArea)));
-			container.add(new UI.Break());
-			container.add(new UI.Text('Area: ' + parseInt(areaValue)));
-			container.add(new UI.Break());
-			container.add(new UI.Text('Volume: ' + parseInt(volumeValue)));
 		} else {
 
 			container.setDisplay( 'none' );

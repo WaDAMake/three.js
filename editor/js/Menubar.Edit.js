@@ -9,7 +9,7 @@ Menubar.Edit = function ( editor ) {
 
 	var title = new UI.Panel();
 	title.setClass( 'title' );
-	title.setTextContent( 'Edit' );
+	title.setTextContent( '編輯' );
 	container.add( title );
 
 	var options = new UI.Panel();
@@ -20,7 +20,7 @@ Menubar.Edit = function ( editor ) {
 
 	var undo = new UI.Row();
 	undo.setClass( 'option' );
-	undo.setTextContent( 'Undo (Ctrl+Z)' );
+	undo.setTextContent( '復原 (Ctrl+Z)' );
 	undo.onClick( function () {
 
 		editor.undo();
@@ -32,7 +32,7 @@ Menubar.Edit = function ( editor ) {
 
 	var redo = new UI.Row();
 	redo.setClass( 'option' );
-	redo.setTextContent( 'Redo (Ctrl+Shift+Z)' );
+	redo.setTextContent( '重做 (Ctrl+Shift+Z)' );
 	redo.onClick( function () {
 
 		editor.redo();
@@ -44,7 +44,7 @@ Menubar.Edit = function ( editor ) {
 
 	var option = new UI.Row();
 	option.setClass( 'option' );
-	option.setTextContent( 'Clear History' );
+	option.setTextContent( '清除編輯記錄' );
 	option.onClick( function () {
 
 		if ( confirm( 'The Undo/Redo History will be cleared. Are you sure?' ) ) {
@@ -86,7 +86,7 @@ Menubar.Edit = function ( editor ) {
 
 	var option = new UI.Row();
 	option.setClass( 'option' );
-	option.setTextContent( 'Clone' );
+	option.setTextContent( '複製模型' );
 	option.onClick( function () {
 
 		var object = editor.selected;
@@ -104,12 +104,12 @@ Menubar.Edit = function ( editor ) {
 
 	var option = new UI.Row();
 	option.setClass( 'option' );
-	option.setTextContent( 'Delete' );
+	option.setTextContent( '刪除模型' );
 	option.onClick( function () {
 
 		var object = editor.selected;
 
-		if ( confirm( 'Delete ' + object.name + '?' ) === false ) return;
+		if ( confirm( '刪除 ' + object.name + '?' ) === false ) return;
 
 		var parent = object.parent;
 		if ( parent === undefined ) return; // avoid deleting the camera or scene
@@ -120,7 +120,7 @@ Menubar.Edit = function ( editor ) {
 	options.add( option );
 
 	// Minify shaders
-
+	/*
 	var option = new UI.Row();
 	option.setClass( 'option' );
 	option.setTextContent( 'Minify Shaders' );
@@ -198,7 +198,7 @@ Menubar.Edit = function ( editor ) {
 
 	} );
 	options.add( option );
-
+	*/
 
 	return container;
 

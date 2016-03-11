@@ -8,21 +8,23 @@ Sidebar.Properties = function ( editor ) {
 
 	var container = new UI.Span();
 
+	/*
 	var objectTab = new UI.Text( 'OBJECT' ).onClick( onClick );
 	var geometryTab = new UI.Text( 'GEOMETRY' ).onClick( onClick );
-	var materialTab = new UI.Text( 'MATERIAL' ).onClick( onClick );
+	//var materialTab = new UI.Text( 'MATERIAL' ).onClick( onClick );
 
 	var tabs = new UI.Div();
 	tabs.setId( 'tabs' );
-	tabs.add( objectTab, geometryTab, materialTab );
+	//tabs.add( objectTab, geometryTab, materialTab );
+	tabs.add( objectTab, geometryTab );
 	container.add( tabs );
-
+	
 	function onClick( event ) {
 
 		select( event.target.textContent );
 
 	}
-
+	*/
 	//
 
 	var object = new UI.Span().add(
@@ -30,18 +32,21 @@ Sidebar.Properties = function ( editor ) {
 	);
 	container.add( object );
 
+	/*
 	var geometry = new UI.Span().add(
 		new Sidebar.Geometry( editor )
 	);
 	container.add( geometry );
-
+	*/
+	/*
 	var material = new UI.Span().add(
 		new Sidebar.Material( editor )
 	);
 	container.add( material );
-
+	*/
+	
 	//
-
+	/*
 	function select( section ) {
 
 		objectTab.setClass( '' );
@@ -70,7 +75,7 @@ Sidebar.Properties = function ( editor ) {
 	}
 
 	select( 'OBJECT' );
-
+	*/
 	return container;
 
 };

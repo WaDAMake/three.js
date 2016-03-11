@@ -53,6 +53,16 @@ Sidebar.Object = function ( editor ) {
 	container.add( objectActions );
 	*/
 	
+	// visible
+
+	var objectVisibleRow = new UI.Row();
+	var objectVisible = new UI.Checkbox().onChange( update );
+
+	objectVisibleRow.add( new UI.Text( '顯示' ).setWidth( '90px' ) );
+	objectVisibleRow.add( objectVisible );
+
+	container.add( objectVisibleRow );
+
 	// migrated from Toolbar.js
 	var signals = editor.signals;
 
@@ -60,30 +70,30 @@ Sidebar.Object = function ( editor ) {
 
 	// translate / rotate / scale
 
-	var modeText = 'Mode: ';
-	var mode = new UI.Text( modeText + 'translate' );
+	var modeText = '操作模式: ';
+	var mode = new UI.Text( modeText + '移動' );
 	buttons.add(mode);
 	container.add(buttons);
 	
-	var translate = new UI.Button( 'translate' ).onClick( function () {
+	var translate = new UI.Button( '移動' ).onClick( function () {
 
-		mode.setValue( modeText + 'translate' );
+		mode.setValue( modeText + '移動' );
 		signals.transformModeChanged.dispatch( 'translate' );
 
 	} );
 	buttons.add( translate );
 
-	var rotate = new UI.Button( 'rotate' ).onClick( function () {
+	var rotate = new UI.Button( '旋轉' ).onClick( function () {
 
-		mode.setValue( modeText + 'rotate' );
+		mode.setValue( modeText + '旋轉' );
 		signals.transformModeChanged.dispatch( 'rotate' );
 
 	} );
 	buttons.add( rotate );
 
-	var scale = new UI.Button( 'scale' ).onClick( function () {
+	var scale = new UI.Button( '調整尺寸' ).onClick( function () {
 
-		mode.setValue( modeText + 'scale' );
+		mode.setValue( modeText + '調整尺寸' );
 		signals.transformModeChanged.dispatch( 'scale' );
 
 	} );
@@ -154,7 +164,7 @@ Sidebar.Object = function ( editor ) {
 
 	} );
 
-	objectNameRow.add( new UI.Text( 'Name' ).setWidth( '90px' ) );
+	objectNameRow.add( new UI.Text( '名稱: ' ).setWidth( '90px' ) );
 	objectNameRow.add( objectName );
 
 	container.add( objectNameRow );
@@ -178,7 +188,7 @@ Sidebar.Object = function ( editor ) {
 	var objectPositionY = new UI.Number().setWidth( '50px' ).onChange( update );
 	var objectPositionZ = new UI.Number().setWidth( '50px' ).onChange( update );
 
-	objectPositionRow.add( new UI.Text( 'Position' ).setWidth( '90px' ) );
+	objectPositionRow.add( new UI.Text( '位置: ' ).setWidth( '90px' ) );
 	objectPositionRow.add( objectPositionX, objectPositionY, objectPositionZ );
 
 	container.add( objectPositionRow );
@@ -190,7 +200,7 @@ Sidebar.Object = function ( editor ) {
 	var objectRotationY = new UI.Number().setWidth( '50px' ).onChange( update );
 	var objectRotationZ = new UI.Number().setWidth( '50px' ).onChange( update );
 
-	objectRotationRow.add( new UI.Text( 'Rotation' ).setWidth( '90px' ) );
+	objectRotationRow.add( new UI.Text( '旋轉: ' ).setWidth( '90px' ) );
 	objectRotationRow.add( objectRotationX, objectRotationY, objectRotationZ );
 
 	container.add( objectRotationRow );
@@ -203,14 +213,45 @@ Sidebar.Object = function ( editor ) {
 	var objectScaleY = new UI.Number( 1 ).setRange( 0.01, Infinity ).setWidth( '50px' ).onChange( updateScaleY );
 	var objectScaleZ = new UI.Number( 1 ).setRange( 0.01, Infinity ).setWidth( '50px' ).onChange( updateScaleZ );
 
-	objectScaleRow.add( new UI.Text( 'Scale' ).setWidth( '90px' ) );
+	objectScaleRow.add( new UI.Text( '縮放:' ).setWidth( '90px' ) );
 	objectScaleRow.add( objectScaleLock );
 	objectScaleRow.add( objectScaleX, objectScaleY, objectScaleZ );
 
 	container.add( objectScaleRow );
 
+	// price
+	var priceRow = new UI.Row();
+	var price = new UI.Text( 'n/a' );
+	
+	priceRow.add(new UI.Text( '價格' ).setWidth( '90px' ));
+	priceRow.add(price);
+	container.add(priceRow);
+	
+	// Volume
+	var volumeRow = new UI.Row();
+	var volume = new UI.Text( 'n/a' );
+	
+	volumeRow.add(new UI.Text( '體積' ).setWidth( '90px' ));
+	volumeRow.add(volume);
+	container.add(volumeRow);
+	
+	// Area
+	var areaRow = new UI.Row();
+	var area = new UI.Text( 'n/a' );
+	
+	areaRow.add(new UI.Text( '面積' ).setWidth( '90px' ));
+	areaRow.add(area);
+	container.add(areaRow);
+	
+	// Supported Area
+	var supportedAreaRow = new UI.Row();
+	var supportedArea = new UI.Text( 'n/a' );
+	
+	supportedAreaRow.add(new UI.Text( '支撐面積' ).setWidth( '90px' ));
+	supportedAreaRow.add(supportedArea);
+	container.add(supportedAreaRow);
 	// fov
-
+	/*
 	var objectFovRow = new UI.Row();
 	var objectFov = new UI.Number().onChange( update );
 
@@ -308,7 +349,8 @@ Sidebar.Object = function ( editor ) {
 	objectDecayRow.add( objectDecay );
 
 	container.add( objectDecayRow );
-
+	*/
+	/*
 	// shadow
 
 	var objectShadowRow = new UI.Row();
@@ -325,17 +367,8 @@ Sidebar.Object = function ( editor ) {
 	objectShadowRow.add( objectShadowRadius );
 
 	container.add( objectShadowRow );
-
-	// visible
-
-	var objectVisibleRow = new UI.Row();
-	var objectVisible = new UI.Checkbox().onChange( update );
-
-	objectVisibleRow.add( new UI.Text( 'Visible' ).setWidth( '90px' ) );
-	objectVisibleRow.add( objectVisible );
-
-	container.add( objectVisibleRow );
-
+	*/
+	/*
 	// user data
 
 	var timeout;
@@ -364,7 +397,7 @@ Sidebar.Object = function ( editor ) {
 	objectUserDataRow.add( objectUserData );
 
 	container.add( objectUserDataRow );
-
+	*/
 
 	//
 
@@ -462,6 +495,7 @@ Sidebar.Object = function ( editor ) {
 
 			}
 
+			/*
 			if ( object.fov !== undefined && Math.abs( object.fov - objectFov.getValue() ) >= 0.01 ) {
 
 				editor.execute( new SetValueCommand( object, 'fov', objectFov.getValue() ) );
@@ -522,13 +556,15 @@ Sidebar.Object = function ( editor ) {
 				editor.execute( new SetValueCommand( object, 'decay', objectDecay.getValue() ) );
 
 			}
-
+			*/
+			
 			if ( object.visible !== objectVisible.getValue() ) {
 
 				editor.execute( new SetValueCommand( object, 'visible', objectVisible.getValue() ) );
 
 			}
 
+			/*
 			if ( object.castShadow !== objectCastShadow.getValue() ) {
 
 				editor.execute( new SetValueCommand( object, 'castShadow', objectCastShadow.getValue() ) );
@@ -555,7 +591,8 @@ Sidebar.Object = function ( editor ) {
 				}
 
 			}
-
+			*/
+			/*
 			try {
 
 				var userData = JSON.parse( objectUserData.getValue() );
@@ -570,11 +607,12 @@ Sidebar.Object = function ( editor ) {
 				console.warn( exception );
 
 			}
-
+			*/
 		}
 
 	}
 
+	/*
 	function updateRows( object ) {
 
 		var properties = {
@@ -601,7 +639,8 @@ Sidebar.Object = function ( editor ) {
 		}
 
 	}
-
+	*/
+	/*
 	function updateTransformRows( object ) {
 
 		if ( object instanceof THREE.Light ||
@@ -618,7 +657,7 @@ Sidebar.Object = function ( editor ) {
 		}
 
 	}
-
+	*/
 	// events
 
 	signals.objectSelected.add( function ( object ) {
@@ -627,7 +666,7 @@ Sidebar.Object = function ( editor ) {
 
 			container.setDisplay( 'block' );
 
-			updateRows( object );
+			//updateRows( object );
 			updateUI( object );
 
 		} else {
@@ -698,6 +737,7 @@ Sidebar.Object = function ( editor ) {
 		objectScaleY.setValue( object.scale.y );
 		objectScaleZ.setValue( object.scale.z );
 
+		/*
 		if ( object.fov !== undefined ) {
 
 			objectFov.setValue( object.fov );
@@ -775,9 +815,10 @@ Sidebar.Object = function ( editor ) {
 			objectShadowRadius.setValue( object.shadow.radius );
 
 		}
-
+		*/
 		objectVisible.setValue( object.visible );
 
+		/*
 		try {
 
 			objectUserData.setValue( JSON.stringify( object.userData, null, '  ' ) );
@@ -790,9 +831,35 @@ Sidebar.Object = function ( editor ) {
 
 		objectUserData.setBorderColor( 'transparent' );
 		objectUserData.setBackgroundColor( '' );
+		*/
+		//updateTransformRows( object );
+		// Calculate price.
+		var geometry = object.geometry;
+		
+		if ( geometry instanceof THREE.BufferGeometry ) {
+			var areaValue = geometry.computeSurfaceArea(object.rotation);
+			var volumeValue = geometry.computeVolume();
+			
+			var loops = 3;
+			var layerHeight = 0.25;
+			var nozzle = 0.4
+			var perimeterSpeed = 30;
+			var infilledSpeed = 55;
+			var infilledPercent = 0.15;
+			var unitPrice = 200;
+			
+			volumeValue -= layerHeight * loops * nozzle;
+			var priceValue = (areaValue / (layerHeight * perimeterSpeed)) * loops + (volumeValue * infilledPercent) / (layerHeight * nozzle * infilledSpeed);
 
-		updateTransformRows( object );
+			price.setValue(parseInt(priceValue / 3600 * unitPrice));
+			volume.setValue(parseInt(volumeValue));
+			area.setValue(parseInt(areaValue));
+			supportedArea.setValue(parseInt(geometry.supportedArea));
+		} else {
 
+			container.setDisplay( 'none' );
+
+		}
 	}
 
 	return container;

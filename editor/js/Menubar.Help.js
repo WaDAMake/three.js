@@ -9,7 +9,7 @@ Menubar.Help = function ( editor ) {
 
 	var title = new UI.Panel();
 	title.setClass( 'title' );
-	title.setTextContent( 'Help' );
+	title.setTextContent( '輔助說明' );
 	container.add( title );
 
 	var options = new UI.Panel();
@@ -23,7 +23,7 @@ Menubar.Help = function ( editor ) {
 	option.setTextContent( 'Source code' );
 	option.onClick( function () {
 
-		window.open( 'https://github.com/mrdoob/three.js/tree/master/editor', '_blank' )
+		window.open( 'https://facebook.com/to.gaher/', '_blank' )
 
 	} );
 	options.add( option );
@@ -32,10 +32,10 @@ Menubar.Help = function ( editor ) {
 
 	var option = new UI.Row();
 	option.setClass( 'option' );
-	option.setTextContent( 'About' );
+	option.setTextContent( '關於' );
 	option.onClick( function () {
 
-		window.open( 'http://threejs.org', '_blank' );
+		window.open( 'http://wadamake.com/', '_blank' );
 
 	} );
 	options.add( option );
