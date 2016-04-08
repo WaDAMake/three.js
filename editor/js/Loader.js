@@ -25,136 +25,6 @@ var Loader = function ( editor ) {
 
 		switch ( extension ) {
 
-			case 'amf':
-
-				reader.addEventListener( 'load', function ( event ) {
-
-					var loader = new THREE.AMFLoader();
-					var amfobject = loader.parse( event.target.result );
-
-					editor.execute( new AddObjectCommand( amfobject ) );
-
-				}, false );
-				reader.readAsArrayBuffer( file );
-
-				break;
-
-			case 'awd':
-
-				reader.addEventListener( 'load', function ( event ) {
-
-					var loader = new THREE.AWDLoader();
-					var scene = loader.parse( event.target.result );
-
-					editor.execute( new SetSceneCommand( scene ) );
-
-				}, false );
-				reader.readAsArrayBuffer( file );
-
-				break;
-
-			case 'babylon':
-
-				reader.addEventListener( 'load', function ( event ) {
-
-					var contents = event.target.result;
-					var json = JSON.parse( contents );
-
-					var loader = new THREE.BabylonLoader();
-					var scene = loader.parse( json );
-
-					editor.execute( new SetSceneCommand( scene ) );
-
-				}, false );
-				reader.readAsText( file );
-
-				break;
-
-			case 'babylonmeshdata':
-
-				reader.addEventListener( 'load', function ( event ) {
-
-					var contents = event.target.result;
-					var json = JSON.parse( contents );
-
-					var loader = new THREE.BabylonLoader();
-
-					var geometry = loader.parseGeometry( json );
-					var material = new THREE.MeshStandardMaterial();
-
-					var mesh = new THREE.Mesh( geometry, material );
-					mesh.name = filename;
-
-					editor.execute( new AddObjectCommand( mesh ) );
-
-				}, false );
-				reader.readAsText( file );
-
-				break;
-
-			case 'ctm':
-
-				reader.addEventListener( 'load', function ( event ) {
-
-					var data = new Uint8Array( event.target.result );
-
-					var stream = new CTM.Stream( data );
-					stream.offset = 0;
-
-					var loader = new THREE.CTMLoader();
-					loader.createModel( new CTM.File( stream ), function( geometry ) {
-
-						geometry.sourceType = "ctm";
-						geometry.sourceFile = file.name;
-
-						var material = new THREE.MeshStandardMaterial();
-
-						var mesh = new THREE.Mesh( geometry, material );
-						mesh.name = filename;
-
-						editor.execute( new AddObjectCommand( mesh ) );
-
-					} );
-
-				}, false );
-				reader.readAsArrayBuffer( file );
-
-				break;
-
-			case 'dae':
-
-				reader.addEventListener( 'load', function ( event ) {
-
-					var contents = event.target.result;
-
-					var loader = new THREE.ColladaLoader();
-					var collada = loader.parse( contents );
-
-					collada.scene.name = filename;
-
-					editor.execute( new AddObjectCommand( collada.scene ) );
-
-				}, false );
-				reader.readAsText( file );
-
-				break;
-
-			case 'fbx':
-
-				reader.addEventListener( 'load', function ( event ) {
-
-					var contents = event.target.result;
-
-					var loader = new THREE.FBXLoader();
-					var object = loader.parse( contents );
-
-					editor.execute( new AddObjectCommand( object ) );
-
-				}, false );
-				reader.readAsText( file );
-
-				break;
-
 			case 'js':
 			case 'json':
 
@@ -211,46 +81,6 @@ var Loader = function ( editor ) {
 
 				break;
 
-
-			case 'kmz':
-
-				reader.addEventListener( 'load', function ( event ) {
-
-					var loader = new THREE.KMZLoader();
-					var collada = loader.parse( event.target.result );
-
-					collada.scene.name = filename;
-
-					editor.execute( new AddObjectCommand( collada.scene ) );
-
-				}, false );
-				reader.readAsArrayBuffer( file );
-
-				break;
-
-			case 'md2':
-
-				reader.addEventListener( 'load', function ( event ) {
-
-					var contents = event.target.result;
-
-					var geometry = new THREE.MD2Loader().parse( contents );
-					var material = new THREE.MeshStandardMaterial( {
-						morphTargets: true,
-						morphNormals: true
-					} );
-
-					var mesh = new THREE.Mesh( geometry, material );
-					mesh.mixer = new THREE.AnimationMixer( mesh );
-					mesh.name = filename;
-
-					editor.execute( new AddObjectCommand( mesh ) );
-
-				}, false );
-				reader.readAsArrayBuffer( file );
-
-				break;
-
 			case 'obj':
 
 				reader.addEventListener( 'load', function ( event ) {
@@ -267,45 +97,6 @@ var Loader = function ( editor ) {
 
 				break;
 
-			case 'playcanvas':
-
-				reader.addEventListener( 'load', function ( event ) {
-
-					var contents = event.target.result;
-					var json = JSON.parse( contents );
-
-					var loader = new THREE.PlayCanvasLoader();
-					var object = loader.parse( json );
-
-					editor.execute( new AddObjectCommand( object ) );
-
-				}, false );
-				reader.readAsText( file );
-
-				break;
-
-			case 'ply':
-
-				reader.addEventListener( 'load', function ( event ) {
-
-					var contents = event.target.result;
-
-					var geometry = new THREE.PLYLoader().parse( contents );
-					geometry.sourceType = "ply";
-					geometry.sourceFile = file.name;
-
-					var material = new THREE.MeshStandardMaterial();
-
-					var mesh = new THREE.Mesh( geometry, material );
-					mesh.name = filename;
-
-					editor.execute( new AddObjectCommand( mesh ) );
-
-				}, false );
-				reader.readAsText( file );
-
-				break;
-
 			case 'stl':
 
 				reader.addEventListener( 'load', function ( event ) {
@@ -313,6 +104,7 @@ var Loader = function ( editor ) {
 					var contents = event.target.result;
 
 					var geometry = new THREE.STLLoader().parse( contents );
+					geometry.center();
 					geometry.sourceType = "stl";
 					geometry.sourceFile = file.name;
 
@@ -334,63 +126,6 @@ var Loader = function ( editor ) {
 					reader.readAsArrayBuffer( file );
 
 				}
-
-				break;
-
-			/*
-			case 'utf8':
-
-				reader.addEventListener( 'load', function ( event ) {
-
-					var contents = event.target.result;
-
-					var geometry = new THREE.UTF8Loader().parse( contents );
-					var material = new THREE.MeshLambertMaterial();
-
-					var mesh = new THREE.Mesh( geometry, material );
-
-					editor.execute( new AddObjectCommand( mesh ) );
-
-				}, false );
-				reader.readAsBinaryString( file );
-
-				break;
-			*/
-
-			case 'vtk':
-
-				reader.addEventListener( 'load', function ( event ) {
-
-					var contents = event.target.result;
-
-					var geometry = new THREE.VTKLoader().parse( contents );
-					geometry.sourceType = "vtk";
-					geometry.sourceFile = file.name;
-
-					var material = new THREE.MeshStandardMaterial();
-
-					var mesh = new THREE.Mesh( geometry, material );
-					mesh.name = filename;
-
-					editor.execute( new AddObjectCommand( mesh ) );
-
-				}, false );
-				reader.readAsText( file );
-
-				break;
-
-			case 'wrl':
-
-				reader.addEventListener( 'load', function ( event ) {
-
-					var contents = event.target.result;
-
-					var result = new THREE.VRMLLoader().parse( contents );
-
-					editor.execute( new SetSceneCommand( result ) );
-
-				}, false );
-				reader.readAsText( file );
 
 				break;
 

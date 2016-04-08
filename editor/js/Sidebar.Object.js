@@ -250,6 +250,15 @@ Sidebar.Object = function ( editor ) {
 	supportedAreaRow.add(new UI.Text( '支撐面積' ).setWidth( '90px' ));
 	supportedAreaRow.add(supportedArea);
 	container.add(supportedAreaRow);
+	
+	// Supported Volume
+	var supportedVolumeRow = new UI.Row();
+	var supportedVolume = new UI.Text( 'n/a' );
+	
+	supportedVolumeRow.add(new UI.Text( '支撐材體積' ).setWidth( '90px' ));
+	supportedVolumeRow.add(supportedVolume);
+	container.add(supportedVolumeRow);
+	
 	// fov
 	/*
 	var objectFovRow = new UI.Row();
@@ -837,24 +846,30 @@ Sidebar.Object = function ( editor ) {
 		var geometry = object.geometry;
 		
 		if ( geometry instanceof THREE.BufferGeometry ) {
-			var areaValue = geometry.computeSurfaceArea(object.rotation);
+			var areaValue = geometry.computeSurfaceArea(object.matrix);
 			var volumeValue = geometry.computeVolume();
 			
 			var loops = 3;
 			var layerHeight = 0.25;
 			var nozzle = 0.4
 			var perimeterSpeed = 30;
-			var infilledSpeed = 55;
+			var infilledSpeed = 48;
 			var infilledPercent = 0.15;
+			var supportedSpeed = 36;
+			var supportedPercent = 0.3;
 			var unitPrice = 200;
 			
 			volumeValue -= layerHeight * loops * nozzle;
-			var priceValue = (areaValue / (layerHeight * perimeterSpeed)) * loops + (volumeValue * infilledPercent) / (layerHeight * nozzle * infilledSpeed);
+			var priceValue = (areaValue / (layerHeight * perimeterSpeed)) * loops
+							+ (volumeValue * infilledPercent) / (layerHeight * nozzle * infilledSpeed);
+			container.add(new UI.Text( 'price w/o supported: ' + priceValue / 3600 * unitPrice));
+			priceValue += (geometry.supportedVolume * supportedPercent) / (layerHeight * nozzle * supportedSpeed);
 
 			price.setValue(parseInt(priceValue / 3600 * unitPrice));
 			volume.setValue(parseInt(volumeValue));
 			area.setValue(parseInt(areaValue));
 			supportedArea.setValue(parseInt(geometry.supportedArea));
+			supportedVolume.setValue(parseInt(geometry.supportedVolume));
 		} else {
 
 			container.setDisplay( 'none' );

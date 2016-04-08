@@ -220,7 +220,6 @@ Sidebar.Scene = function ( editor ) {
 
 	};
 	*/
-	
 	refreshUI();
 
 	// events

@@ -62,9 +62,6 @@ var Editor = function () {
 		scriptChanged: new SIGNALS.Signal(),
 		scriptRemoved: new SIGNALS.Signal(),
 
-		fogTypeChanged: new SIGNALS.Signal(),
-		fogColorChanged: new SIGNALS.Signal(),
-		fogParametersChanged: new SIGNALS.Signal(),
 		windowResize: new SIGNALS.Signal(),
 
 		showGridChanged: new SIGNALS.Signal(),

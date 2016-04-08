@@ -25,6 +25,7 @@ THREE.BufferGeometry = function () {
 	this.drawRange = { start: 0, count: Infinity };
 	
 	this.supportedArea = null;
+	this.supportedVolume = null;
 
 };
 
@@ -276,6 +277,18 @@ THREE.BufferGeometry.prototype = {
 
 	},
 
+	centerAt: function(z) {
+
+		this.computeBoundingBox();
+
+		var offset = this.boundingBox.center().negate();
+
+		this.translate( offset.x, offset.y, offset.z );
+
+		return offset;
+		
+	},
+	
 	setFromObject: function ( object ) {
 
 		// console.log( 'THREE.BufferGeometry.setFromObject(). Converting', object, this );
@@ -767,9 +780,9 @@ THREE.BufferGeometry.prototype = {
 
 	},
 
-	computeSurfaceArea: function (rotation, angleThresh) {
+	computeSurfaceArea: function (matrix, angleThresh) {
 
-		if (rotation == undefined) return null;
+		if (matrix == undefined) return null;
 		
 		angleThresh = angleThresh || 45;
 		
@@ -777,7 +790,8 @@ THREE.BufferGeometry.prototype = {
 		var attributes = this.attributes;
 		var groups = this.groups;
 		var area = 0;
-
+		var aveZ;
+		
 		var N = new THREE.Vector3(0, 0, 1);
 		var angle = 0;
 
@@ -785,6 +799,7 @@ THREE.BufferGeometry.prototype = {
 
 			var positions = attributes.position.array;
 			this.supportedArea = 0;
+			this.supportedVolume = 0;
 			
 			if ( attributes.normal === undefined ) {
 
@@ -847,6 +862,10 @@ THREE.BufferGeometry.prototype = {
 						pB.fromArray( positions, vB );
 						pC.fromArray( positions, vC );
 
+						pA.applyMatrix4(matrix);
+						pB.applyMatrix4(matrix);
+						pC.applyMatrix4(matrix);
+
 						cb.subVectors( pC, pB );
 						ab.subVectors( pA, pB );
 						vN.crossVectors(cb, ab);
@@ -857,14 +876,19 @@ THREE.BufferGeometry.prototype = {
 						area += l / 2;
 
 						// compute supported area.
-						vN.applyEuler(rotation);
+						//vN.applyMatrix(matrix);
 						vN.cross(N);
 						
 						angle = 180 * Math.asin(vN.length() / l) / Math.PI;
 						
 						if (faceDown) {
-							if (angle >= angleThresh)
-	    	                	this.supportedArea += (l / 2);
+							if (angle >= angleThresh) {
+								aveZ = Math.abs((pA.z + pB.z + pC.z) / 3);
+								l = l / 2;
+								
+								this.supportedArea += l;
+								this.supportedVolume += (l * aveZ);
+							}
 						}
 					}
 
@@ -880,6 +904,10 @@ THREE.BufferGeometry.prototype = {
 					pB.fromArray( positions, i + 3 );
 					pC.fromArray( positions, i + 6 );
 
+					pA.applyMatrix4(matrix);
+					pB.applyMatrix4(matrix);
+					pC.applyMatrix4(matrix);
+
 					cb.subVectors( pC, pB );
 					ab.subVectors( pA, pB );
 					vN.crossVectors(cb, ab);
@@ -890,14 +918,19 @@ THREE.BufferGeometry.prototype = {
 					area += l / 2;
 
 					// compute supported area.
-					vN.applyEuler(rotation);
+					//vN.applyMatrix(matrix);
 					vN.cross(N);
 					
 					angle = 180 * Math.asin(vN.length() / l) / Math.PI;
 					
 					if (faceDown) {
-						if (angle >= angleThresh)
-    	                	this.supportedArea += (l / 2);
+						if (angle >= angleThresh) {
+								aveZ = Math.abs((pA.z + pB.z + pC.z) / 3);
+								l = l / 2;
+								
+								this.supportedArea += l;
+								this.supportedVolume += (l * aveZ);
+						}
 					}
 				}
 
