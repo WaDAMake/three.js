@@ -104,22 +104,22 @@ Sidebar.Object = function ( editor ) {
 	var grid = new UI.Integer( 10 ).setWidth( '40px' ).onChange( updateGrid );
 	var gridRow = new UI.Row();
 	
-	gridRow.add( new UI.Text( 'grid: ' ) );
+	gridRow.add( new UI.Text( '格線: ' ) );
 	gridRow.add( grid );
 
-	var snap = new UI.THREE.Boolean( false, 'snap' ).onChange( updateGrid );
+    var showGrid = new UI.THREE.Boolean( true, '顯示' ).onChange( updateGrid );
+	gridRow.add( showGrid );
+
+	var snap = new UI.THREE.Boolean( false, '對齊' ).onChange( updateGrid );
 	gridRow.add( snap );
 
-	var local = new UI.THREE.Boolean( false, 'local' ).onChange( updateGrid );
-	gridRow.add( local );
-
-	var showGrid = new UI.THREE.Boolean( true, 'show' ).onChange( updateGrid );
-	gridRow.add( showGrid );
+	//var local = new UI.THREE.Boolean( false, 'local' ).onChange( updateGrid );
+	//gridRow.add( local );
 
 	function updateGrid() {
 
 		signals.snapChanged.dispatch( snap.getValue() === true ? grid.getValue() : null );
-		signals.spaceChanged.dispatch( local.getValue() === true ? "local" : "world" );
+		//signals.spaceChanged.dispatch( local.getValue() === true ? "local" : "world" );
 		signals.showGridChanged.dispatch( showGrid.getValue() );
 
 	}
@@ -846,7 +846,7 @@ Sidebar.Object = function ( editor ) {
 		var geometry = object.geometry;
 		
 		if ( geometry instanceof THREE.BufferGeometry ) {
-			var areaValue = geometry.computeSurfaceArea(object.matrix);
+			var areaValue = geometry.computeSurfaceArea(object.matrix, 40, true);
 			var volumeValue = geometry.computeVolume();
 			
 			var loops = 3;
@@ -862,10 +862,10 @@ Sidebar.Object = function ( editor ) {
 			volumeValue -= layerHeight * loops * nozzle;
 			var priceValue = (areaValue / (layerHeight * perimeterSpeed)) * loops
 							+ (volumeValue * infilledPercent) / (layerHeight * nozzle * infilledSpeed);
-			container.add(new UI.Text( 'price w/o supported: ' + priceValue / 3600 * unitPrice));
-			priceValue += (geometry.supportedVolume * supportedPercent) / (layerHeight * nozzle * supportedSpeed);
+            var supportPriceValue = (geometry.supportedVolume * supportedPercent) / (layerHeight * nozzle * supportedSpeed);
 
-			price.setValue(parseInt(priceValue / 3600 * unitPrice));
+			price.setValue(parseInt((priceValue + supportPriceValue) / 3600 * unitPrice)
+                           + " / " + parseInt(priceValue / 3600 * unitPrice));
 			volume.setValue(parseInt(volumeValue));
 			area.setValue(parseInt(areaValue));
 			supportedArea.setValue(parseInt(geometry.supportedArea));

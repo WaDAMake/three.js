@@ -103,7 +103,7 @@ var Loader = function ( editor ) {
 
 					var contents = event.target.result;
 
-					var geometry = new THREE.STLLoader().parse( contents );
+					var geometry = new THREE.STLLoader().parse( contents, true );
 					geometry.center();
 					geometry.sourceType = "stl";
 					geometry.sourceFile = file.name;
@@ -112,7 +112,8 @@ var Loader = function ( editor ) {
 					
 					var mesh = new THREE.Mesh( geometry, material );
 					mesh.name = filename;
-
+                    mesh.centerOnPlane();
+                    
 					editor.execute( new AddObjectCommand( mesh ) );
 
 				}, false );

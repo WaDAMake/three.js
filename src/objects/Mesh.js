@@ -338,3 +338,7 @@ THREE.Mesh.prototype.clone = function () {
 	return new this.constructor( this.geometry, this.material ).copy( this );
 
 };
+
+THREE.Mesh.prototype.centerOnPlane = function () {
+    this.translateY(- this.geometry.boundingBox.min.y);
+}; 

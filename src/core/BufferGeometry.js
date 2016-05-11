@@ -277,18 +277,6 @@ THREE.BufferGeometry.prototype = {
 
 	},
 
-	centerAt: function(z) {
-
-		this.computeBoundingBox();
-
-		var offset = this.boundingBox.center().negate();
-
-		this.translate( offset.x, offset.y, offset.z );
-
-		return offset;
-		
-	},
-	
 	setFromObject: function ( object ) {
 
 		// console.log( 'THREE.BufferGeometry.setFromObject(). Converting', object, this );
@@ -780,21 +768,22 @@ THREE.BufferGeometry.prototype = {
 
 	},
 
-	computeSurfaceArea: function (matrix, angleThresh) {
+	computeSurfaceArea: function (matrix, angleThresh, isolate ) {
 
 		if (matrix == undefined) return null;
-		
+		isolate = isolate || false;
+        
 		angleThresh = angleThresh || 45;
 		
 		var index = this.index;
 		var attributes = this.attributes;
 		var groups = this.groups;
 		var area = 0;
-		var aveZ;
+		var aveY;
 		
-		var N = new THREE.Vector3(0, 0, 1);
-		var angle = 0;
-
+		var N = new THREE.Vector3(0, 1, 0);
+		var angle = 0, angle2 = 0;
+        
 		if ( attributes.position ) {
 
 			var positions = attributes.position.array;
@@ -820,6 +809,7 @@ THREE.BufferGeometry.prototype = {
 			}
 
 			var normals = attributes.normal.array;
+            var color = attributes.color.array;
 
 			var faceDown = false;
 			var l, vA, vB, vC,
@@ -831,10 +821,17 @@ THREE.BufferGeometry.prototype = {
 			pC = new THREE.Vector3(),
 
 			cb = new THREE.Vector3(),
-			ab = new THREE.Vector3();
+			ab = new THREE.Vector3(),
 
+            min = this.boundingBox.min.clone(),
+            max = this.boundingBox.max.clone();
+            
+            min.applyMatrix4(matrix);
+            max.applyMatrix4(matrix);
+            
+            var minY = min.y < max.y ? min.y : max.y;
+            
 			// indexed elements
-
 			if ( index ) {
 
 				var indices = index.array;
@@ -861,7 +858,7 @@ THREE.BufferGeometry.prototype = {
 						pA.fromArray( positions, vA );
 						pB.fromArray( positions, vB );
 						pC.fromArray( positions, vC );
-
+                        
 						pA.applyMatrix4(matrix);
 						pB.applyMatrix4(matrix);
 						pC.applyMatrix4(matrix);
@@ -871,23 +868,27 @@ THREE.BufferGeometry.prototype = {
 						vN.crossVectors(cb, ab);
 
 						l = vN.length();
-						faceDown = vN.z < 0;
+                        
+                        faceDown = vN.y < 0;
 						
 						area += l / 2;
 
 						// compute supported area.
-						//vN.applyMatrix(matrix);
 						vN.cross(N);
 						
 						angle = 180 * Math.asin(vN.length() / l) / Math.PI;
-						
+						angle2 = 90 - angle;
 						if (faceDown) {
-							if (angle >= angleThresh) {
-								aveZ = Math.abs((pA.z + pB.z + pC.z) / 3);
+							if (angle2 >= angleThresh) {                                
+								aveY = (pA.y + pB.y + pC.y) / 3;
+                                if (isolate) {
+                                    aveY = aveY - minY; 
+                                }
+
 								l = l / 2;
 								
 								this.supportedArea += l;
-								this.supportedVolume += (l * aveZ);
+								this.supportedVolume += (l * aveY);
 							}
 						}
 					}
@@ -895,9 +896,7 @@ THREE.BufferGeometry.prototype = {
 				}
 
 			} else {
-
 				// non-indexed elements (unconnected triangle soup)
-
 				for ( var i = 0, il = positions.length; i < il; i += 9 ) {
 
 					pA.fromArray( positions, i );
@@ -913,23 +912,27 @@ THREE.BufferGeometry.prototype = {
 					vN.crossVectors(cb, ab);
 					
 					l = vN.length();
-					faceDown = vN.z < 0;
+                    
+                    faceDown = vN.y < 0;
 					
 					area += l / 2;
 
 					// compute supported area.
-					//vN.applyMatrix(matrix);
 					vN.cross(N);
 					
 					angle = 180 * Math.asin(vN.length() / l) / Math.PI;
-					
+                    angle2 = 90 - angle;
 					if (faceDown) {
-						if (angle >= angleThresh) {
-								aveZ = Math.abs((pA.z + pB.z + pC.z) / 3);
-								l = l / 2;
-								
-								this.supportedArea += l;
-								this.supportedVolume += (l * aveZ);
+						if (angle2 >= angleThresh) {
+                            aveY = (pA.y + pB.y + pC.y) / 3;
+                            if (isolate) {
+                                aveY = aveY - minY;
+                            }
+
+                            l = l / 2;
+
+                            this.supportedArea += l;
+                            this.supportedVolume += (l * aveY);
 						}
 					}
 				}

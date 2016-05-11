@@ -37,7 +37,7 @@ THREE.STLLoader.prototype = {
 
 	constructor: THREE.STLLoader,
 
-	load: function ( url, onLoad, onProgress, onError ) {
+	load: function ( url, flipYZ, onLoad, onProgress, onError ) {
 
 		var scope = this;
 
@@ -45,14 +45,15 @@ THREE.STLLoader.prototype = {
 		loader.setResponseType( 'arraybuffer' );
 		loader.load( url, function ( text ) {
 
-			onLoad( scope.parse( text ) );
+			onLoad( scope.parse( text, flipYZ ) );
 
 		}, onProgress, onError );
 
 	},
 
-	parse: function ( data ) {
+	parse: function ( data , flipYZ ) {
 
+        flipYZ = flipYZ || false;
 		var isBinary = function () {
 
 			var expect, face_size, n_faces, reader;
@@ -87,13 +88,13 @@ THREE.STLLoader.prototype = {
 		var binData = this.ensureBinary( data );
 
 		return isBinary()
-			? this.parseBinary( binData )
-			: this.parseASCII( this.ensureString( data ) );
+			? this.parseBinary( binData, flipYZ )
+			: this.parseASCII( this.ensureString( data ), flipYZ );
 
 	},
 
-	parseBinary: function ( data ) {
-
+	parseBinary: function ( data, flipYZ ) {
+        
 		var reader = new DataView( data );
 		var faces = reader.getUint32( 80, true );
 
@@ -103,6 +104,8 @@ THREE.STLLoader.prototype = {
 		// process STL header
 		// check for default color in header ("COLOR=rgba" sequence).
 
+        colors = new Float32Array( faces * 3 * 3 );
+
 		for ( var index = 0; index < 80 - 10; index ++ ) {
 
 			if ( ( reader.getUint32( index, false ) == 0x434F4C4F /*COLO*/ ) &&
@@ -110,8 +113,6 @@ THREE.STLLoader.prototype = {
 				( reader.getUint8( index + 5 ) == 0x3D /*'='*/ ) ) {
 
 				hasColors = true;
-				colors = new Float32Array( faces * 3 * 3 );
-
 				defaultR = reader.getUint8( index + 6 ) / 255;
 				defaultG = reader.getUint8( index + 7 ) / 255;
 				defaultB = reader.getUint8( index + 8 ) / 255;
@@ -121,6 +122,16 @@ THREE.STLLoader.prototype = {
 
 		}
 
+        // Define default color.
+        if ( !hasColors ) {
+            defaultR = THREE.Math.randFloat(0, 1);
+            defaultG = THREE.Math.randFloat(0, 1);
+            defaultB = THREE.Math.randFloat(0, 1);
+            alpha = 1;
+            
+            hasColors = true;
+        }
+        
 		var dataOffset = 84;
 		var faceLength = 12 * 4 + 2;
 
@@ -165,20 +176,26 @@ THREE.STLLoader.prototype = {
 				var vertexstart = start + i * 12;
 
 				vertices[ offset ] = reader.getFloat32( vertexstart, true );
-				vertices[ offset + 1 ] = reader.getFloat32( vertexstart + 4, true );
-				vertices[ offset + 2 ] = reader.getFloat32( vertexstart + 8, true );
-
 				normals[ offset ] = normalX;
-				normals[ offset + 1 ] = normalY;
-				normals[ offset + 2 ] = normalZ;
 
-				if ( hasColors ) {
+                if (!flipYZ) {
+                    vertices[ offset + 1 ] = reader.getFloat32( vertexstart + 4, true );
+				    vertices[ offset + 2 ] = reader.getFloat32( vertexstart + 8, true );
 
-					colors[ offset ] = r;
-					colors[ offset + 1 ] = g;
-					colors[ offset + 2 ] = b;
+				    normals[ offset + 1 ] = normalY;
+				    normals[ offset + 2 ] = normalZ;
+                }
+                else {
+                    vertices[ offset + 1 ] = reader.getFloat32( vertexstart + 8, true );
+				    vertices[ offset + 2 ] = -reader.getFloat32( vertexstart + 4, true );
 
-				}
+				    normals[ offset + 1 ] = normalZ;
+				    normals[ offset + 2 ] = -normalY;
+                }
+
+                colors[ offset ] = r;
+                colors[ offset + 1 ] = g;
+                colors[ offset + 2 ] = b;
 
 				offset += 3;
 
@@ -201,8 +218,8 @@ THREE.STLLoader.prototype = {
 
 	},
 
-	parseASCII: function ( data ) {
-
+	parseASCII: function ( data, flipYZ ) {
+        
 		var geometry, length, normal, patternFace, patternNormal, patternVertex, result, text;
 		geometry = new THREE.Geometry();
 		patternFace = /facet([\s\S]*?)endfacet/g;
@@ -214,7 +231,10 @@ THREE.STLLoader.prototype = {
 
 			while ( ( result = patternNormal.exec( text ) ) !== null ) {
 
-				normal = new THREE.Vector3( parseFloat( result[ 1 ] ), parseFloat( result[ 3 ] ), parseFloat( result[ 5 ] ) );
+                if (!flipYZ)
+                    normal = new THREE.Vector3( parseFloat( result[ 1 ] ), parseFloat( result[ 3 ] ), parseFloat( result[ 5 ] ) );
+                else
+                    normal = new THREE.Vector3( parseFloat( result[ 1 ] ), parseFloat( result[ 5 ] ), - parseFloat( result[ 3 ] ) );
 
 			}
 
@@ -222,7 +242,10 @@ THREE.STLLoader.prototype = {
 
 			while ( ( result = patternVertex.exec( text ) ) !== null ) {
 
-				geometry.vertices.push( new THREE.Vector3( parseFloat( result[ 1 ] ), parseFloat( result[ 3 ] ), parseFloat( result[ 5 ] ) ) );
+                if (!flipYZ)
+                    geometry.vertices.push( new THREE.Vector3( parseFloat( result[ 1 ] ), parseFloat( result[ 3 ] ), parseFloat( result[ 5 ] ) ) );
+                else
+                    geometry.vertices.push( new THREE.Vector3( parseFloat( result[ 1 ] ), parseFloat( result[ 5 ] ), - parseFloat( result[ 3 ] ) ) );
 
 			}
 
