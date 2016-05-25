@@ -9,7 +9,7 @@
 		<link href="css/main.css" rel="stylesheet" />
 		<link id="theme" href="css/light.css" rel="stylesheet" />
 
-		<script src="../build/three.min.js"></script>
+		<script src="../build/three.js"></script>
 		<script src="../examples/js/libs/system.min.js"></script>
 
 		<script src="../examples/js/controls/EditorControls.js"></script>
@@ -148,6 +148,8 @@
 		<script src="js/commands/SetMaterialMapCommand.js"></script>
 		<script src="js/commands/SetSceneCommand.js"></script>
 
+        <script src="RobotSim.js"></script>
+        
 		<!-- <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="qyqgfqd9j8z890t"></script> -->
 
 		<script>
@@ -257,6 +259,7 @@
 
 				} );
 
+                var robot = new RobotSim( editor.scene );
 			} );
 
 			//
